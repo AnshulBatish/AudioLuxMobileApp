@@ -29,6 +29,14 @@ export function SaveName() {
   );
 }
 
+export function ConnectToDevice() {
+  return (
+    <Pressable style={styles.connect}>
+      <Text style={styles.addText}>Connect To Device</Text>
+    </Pressable>
+  );
+}
+
 export function DisconnectDevice() {
   return (
     <Pressable>
@@ -39,7 +47,7 @@ export function DisconnectDevice() {
 
 const styles = StyleSheet.create({
   add: {
-    width: 230,
+    width: 250,
     height: 90,
     alignItems: "center",
     justifyContent: "center",
@@ -64,4 +72,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  connect: {
+    width: 230,
+    height: 90,
+    alignItems: "center",
+    backgroundColor: 'red'
+  }
 });

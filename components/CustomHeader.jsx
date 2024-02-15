@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
-import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const CustomHeader = () => {
   return (
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
     justifyContent: "center",
-    borderStyle: "outset",
     borderBottomWidth: 2,
   },
   logo: {
@@ -53,6 +52,7 @@ const styles = StyleSheet.create({
     fontFamily: "KSRegular",
     color: 'white',
     margin: 2,
+
 
   },
 });

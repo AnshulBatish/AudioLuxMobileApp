@@ -9,6 +9,7 @@ import {
 import React, { useState } from "react";
 import { Link, router, useNavigation } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { TouchableRipple, ProgressBar, MD3Colors } from "react-native-paper";
 
 const DATA = [
   {
@@ -23,53 +24,85 @@ const DATA = [
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     title: "Third Item",
   },
+  {
+    id: "58694a0f-3da1-471f-bd96-145571e29d73",
+    title: "Fourth Item",
+  },
+  {
+    id: "58694a0f-3da1-471f-bd96-145571e29d74",
+    title: "Fifth Item",
+  },
 ];
 
-export default function Device() {
-  const AudioLux = ({ title }) => (
-    <SafeAreaView style={{flex: 1,}}>
-      <Link href="/connectDevice" asChild>
-        <Pressable onLongPress={() => router.push((href = "/modal"))}>
-            <View>
+export default function Device({ onScroll }) {
+  const [isPressing, setIsPressing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  let intervalId;
 
+  const startProgress = () => {
+    setIsPressing(true);
+    intervalId = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress < 1) {
+            return prevProgress + 0.1; // Increase progress by 1% each interval
+        } else {
+          console.log("Reached: ", prevProgress, progress)
+          // stopProgress();
+          clearInterval(intervalId); // Stop interval when progress reaches 100%
+          setProgress(0);
+          router.push(href = "/modal")
+          return 1;
+        }
+      });
+    }, 100); // Interval time in milliseconds (adjust as needed)
+  };
+
+  const stopProgress = () => {
+    setProgress(0); // Reset progress when touch is released
+    setIsPressing(false);
+    clearInterval(intervalId); // Stop the interval when touch is released
+    console.log(" ====Stopping Progress Function Invoked: ", isPressing, progress)
+  };
+
+  
+/**
+ * 
+ * Put an editable badge to edit the devices instead of trying animation
+ */
+
+
+  const AudioLux = ({ title }) => (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Link href="/connectDevice" asChild>
+        <Pressable
+          // onPressOut={stopProgress} // Stop progress when touch ends
+          // onLongPress={startProgress} // Start progress when long press begins
+          onLongPress={() => (router.push('./modal'))}
+        >
           <View style={styles.container}>
-      {/* <LinearGradient
-        colors={['#003cf4', '#fd1d1d']}
-        start={{ x: 0.2, y: 0.5 }}
-        end={{ x: 0.8, y: 0.4 }}
-        style={styles.device}
-        > */}
             <Text style={styles.text}>{title}</Text>
-      {/* </LinearGradient> */}
           </View>
-        </View>
         </Pressable>
       </Link>
     </SafeAreaView>
   );
 
   return (
-    <SafeAreaView style={styles.view}>
+    <SafeAreaView>
+      {isPressing && <ProgressBar progress={progress} color={MD3Colors.error50} />}
       <FlatList
         data={DATA}
         renderItem={({ item }) => <AudioLux title={item.title} />}
         keyExtractor={(item) => item.id}
+        onScroll={onScroll}
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  device: {
-    width: '121%',
-    height: '163%',
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-  },
   view: {
-    flex: 1,
-    flexBasis: "100%"
+    flexBasis: "100%",
   },
   container: {
     width: "80%",

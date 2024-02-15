@@ -5,16 +5,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function EditDevice({ modalVisible, setModalVisible }) {
   return (
-    <Modal
-      animationType="slide"
-      presentationStyle="overFullScreen"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
-        setModalVisible(!modalVisible);
-      }}
-    >
       <View style={styles.modalView}>
         <View>
           <Pressable
@@ -26,7 +16,6 @@ export default function EditDevice({ modalVisible, setModalVisible }) {
         </View>
         <TextInputComponent placeholder={"Device Name"} />
       </View>
-    </Modal>
   );
 }
 
@@ -43,16 +32,10 @@ const styles = StyleSheet.create({
     top: -35,
     left: -35,
   },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
   headerText: {
     fontFamily: "Times New Roman",
     fontSize: 20,
     alignSelf: 'center',
     marginTop: 50,
-
   },
 });
