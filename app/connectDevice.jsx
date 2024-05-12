@@ -1,6 +1,14 @@
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import {
+  Animated,
+  Easing,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import React, { useRef, useState } from "react";
-import { router } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { TextInput, Button, HelperText } from "react-native-paper";
 
@@ -10,7 +18,9 @@ export default function ConnectDevice() {
   const [isIncorrectPassword, setIsIncorrectPassword] = useState(false);
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 
-  const correctPassword = "";
+  const navigation = useNavigation();
+
+  const correctPassword = "a";
 
   const handleTextSubmit = () => {
     if (text !== correctPassword) {
@@ -45,8 +55,8 @@ export default function ConnectDevice() {
       ]).start();
     } else {
       setIsIncorrectPassword(false); // Reset state if password is correct
-      setPasswordVisible(passwordIsVisible => !passwordIsVisible)
-      router.push("controlDevice");
+      setPasswordVisible(true);
+      router.navigate("PatternControl");
     }
   };
 
@@ -55,46 +65,63 @@ export default function ConnectDevice() {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="dark-mode" />
-      <Text style={styles.header}>Enter Device Password</Text>
-      <View>
-        <TextInput
-          label="Password"
-          secureTextEntry={passwordVisible}
-          value={text}
-          onChangeText={(text) => setText(text)}
-          right={
-            <TextInput.Icon
-              icon={passwordVisible ? "eye-off" : "eye"} // Toggle eye icon based on passwordVisible state
-              onPress={() => setPasswordVisible(false)} // Toggle password visibility on press
-            />
-          }
-          onSubmitEditing={handleTextSubmit} // Call handleTextSubmit when "Enter" is pressed
-          style={styles.textInput}
-        />
-        <Animated.View
-          style={[
-            styles.helperTextContainer,
-            { transform: [{ translateX: shakeAnimation }] },
-          ]}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <StatusBar style="dark-mode" />
+        <Text style={styles.header}>Enter Device Password</Text>
+        <View>
+          <TextInput
+            label="Password"
+            secureTextEntry={passwordVisible}
+            value={text}
+            textColor="black"
+            mode="outlined"
+            selectionColor="red"
+            activeOutlineColor="red"
+            outlineColor="black"
+            onChangeText={(text) => setText(text)}
+            right={
+              <TextInput.Icon
+                icon={passwordVisible ? "eye-off" : "eye"} // Toggle eye icon based on passwordVisible state
+                onPress={() => setPasswordVisible((prev) => !prev)} // Toggle password visibility on press
+                color={"black"}
+              />
+            }
+            onSubmitEditing={handleTextSubmit} // Call handleTextSubmit when "Enter" is pressed
+            style={styles.textInput}
+          />
+          <Animated.View
+            style={[
+              styles.helperTextContainer,
+              { transform: [{ translateX: shakeAnimation }] },
+            ]}
+          >
+            <HelperText
+              type="error"
+              visible={hasErrors()}
+              style={{
+                color: "blue",
+                marginHorizontal: 12,
+                fontSize: 15,
+                fontWeight: 500,
+              }}
+            >
+              Incorrect Password!
+            </HelperText>
+          </Animated.View>
+        </View>
+        <Button
+          mode="elevated"
+          buttonColor="red"
+          textColor="white"
+          labelStyle={styles.buttonLabel}
+          style={styles.button}
+          onPress={handleTextSubmit}
         >
-          <HelperText type="error" visible={hasErrors()}>
-            Incorrect Password!
-          </HelperText>
-        </Animated.View>
+          Connect To Device
+        </Button>
       </View>
-      <Button
-        mode="elevated"
-        buttonColor="red"
-        textColor="white"
-        labelStyle={styles.buttonLabel}
-        style={styles.button}
-        onPress={handleTextSubmit}
-      >
-        Connect To Device
-      </Button>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -112,6 +139,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     margin: 20,
+    backgroundColor: "white",
   },
   button: {
     margin: 20,

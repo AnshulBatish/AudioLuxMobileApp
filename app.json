@@ -5,17 +5,38 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router"
+      ],
+      [
+        "react-native-wifi-reborn"
+      ],
       [
         "expo-font",
         {
           "fonts": [
-            "assets/fonts/Kumbh_Sans/KumbhSans-VariableFont_YOPQ,wght.ttf"
+            {
+              "asset": "assets/fonts/Kumbh_Sans/KumbhSans-VariableFont_YOPQ,wght.ttf"
+            }
           ]
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
     ],
     "name": "AudioLuxMobileApp",
-    "slug": "AudioLuxMobileApp"
+    "slug": "AudioLuxMobileApp",
+    "ios": {
+      "bundleIdentifier": "com.anshulbat.AudioLuxMobileApp"
+    }
+  },
+  "ios": {
+    "entitlements": {
+      "com.apple.developer.networking.wifi-info": true
+    }
   }
 }
