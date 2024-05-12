@@ -1,0 +1,15 @@
+import React from "react";
+import { Stack } from "expo-router";
+
+export default function Layout() {
+  return (
+    <Stack>
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          headerShown: false, // Hide the header for this screen
+        }}
+      />
+    </Stack>
+  );
+}
