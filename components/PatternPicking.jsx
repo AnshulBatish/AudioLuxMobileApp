@@ -5,6 +5,7 @@ import * as SQLite from "expo-sqlite";
 import patternsData from "../data/patternsData";
 import PatternSettings from "./PatternSettings";
 import { StyleSheet, Text, View } from "react-native";
+import { OnlineConnectivityProvider } from "../utils/useConnectivity";
 
 const db = SQLite.openDatabaseAsync("patternData.db");
 
@@ -23,6 +24,9 @@ const DropdownPicker = () => {
 
   useEffect(() => {
     async function initializeDatabase() {
+      // Delete existing table if it exists
+      // (await db).execAsync("DROP TABLE IF EXISTS patterns");
+
       const allRows = (await db).getAllAsync(
         'SELECT * FROM sqlite_master WHERE type="table" AND name="patterns"'
       );
@@ -30,22 +34,19 @@ const DropdownPicker = () => {
       if ((await allRows).length == 0) {
         console.log("Time to make a new table!");
         (await db).execAsync(
-          "CREATE TABLE IF NOT EXISTS patterns (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, isFavorite INTEGER NOT NULL, configs TEXT NOT NULL)"
+          "CREATE TABLE IF NOT EXISTS patterns (id INTEGER PRIMARY KEY, name TEXT NOT NULL, isFavorite INTEGER NOT NULL, configs TEXT NOT NULL)"
         );
 
-        patternsData.reverse().forEach(
-          (pattern) =>
-            async function () {
-              (await db).runAsync(
-                "INSERT INTO patterns (name, isFavorite, configs) VALUES (?,?, ?)",
-                [
-                  pattern.name,
-                  pattern.isFavorite,
-                  JSON.stringify(pattern.configs),
-                ]
-              );
-            }
-        );
+        for (const pattern of patternsData) {
+          console.log("Inserting pattern!");
+          await (await db).runAsync(
+            "INSERT INTO patterns (id, name, isFavorite, configs) VALUES (?, ?, ?, ?)",
+            [pattern.id, pattern.name, pattern.isFavorite, JSON.stringify(pattern.configs)]
+          );
+        }
+
+      } else {
+        console.log("Table already exists!");
       }
 
       fetchData();
@@ -53,58 +54,13 @@ const DropdownPicker = () => {
     initializeDatabase();
   }, []);
 
-  // useEffect(() => {
-  //   const initializeDatabase = () => {
-  //     db.transaction((tx) => {
-  //       tx.executeSql(
-  //         'SELECT * FROM sqlite_master WHERE type="table" AND name="patterns"',
-  //         [],
-  //         (_, { rows }) => {
-  //           if (rows.length === 0) {
-  //             tx.executeSql(
-  //               "CREATE TABLE IF NOT EXISTS patterns (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, isFavorite INTEGER NOT NULL, configs TEXT NOT NULL)"
-  //             );
-  //             patternsData.reverse().forEach((pattern) => {
-  //               tx.executeSql(
-  //                 "INSERT INTO patterns (name, isFavorite, configs) VALUES (?, ?, ?)",
-  //                 [
-  //                   pattern.name,
-  //                   pattern.isFavorite,
-  //                   JSON.stringify(pattern.configs),
-  //                 ]
-  //               );
-  //             });
-  //           }
-  //           fetchData(); // Fetch data after initializing
-  //         },
-  //         (_, error) => console.log("Error checking table existence:", error)
-  //       );
-  //     });
-  //   };
-  //   initializeDatabase();
-  // }, []);
-
   async function fetchData() {
-    const allRows = (await db).getAllAsync("SELECT * FROM patterns");
+    const allRows = (await (await db).getAllAsync("SELECT * FROM patterns ORDER BY name ASC")).reverse();
 
-    const dropdownItems = constructDropdownItems(await allRows);
+    const dropdownItems = constructDropdownItems(allRows);
+
     setPatternItems(dropdownItems);
   }
-
-  // const fetchData = () => {
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       "SELECT * FROM patterns",
-  //       [],
-  //       (_, { rows }) => {
-  //         const fetchedItems = rows._array;
-  //         const dropdownItems = constructDropdownItems(fetchedItems);
-  //         setPatternItems(dropdownItems);
-  //       },
-  //       (_, error) => console.log("Error fetching patterns:", error)
-  //     );
-  //   });
-  // };
 
   async function updateTable(id, currentIsFavorite) {
     // Flip the isFavorite status
@@ -119,29 +75,6 @@ const DropdownPicker = () => {
     // Fetch updated data after update
     fetchData();
   }
-
-  // const updateTable = (id, currentIsFavorite) => {
-  //   // Flip the isFavorite status
-  //   const newIsFavorite = currentIsFavorite ? 0 : 1;
-
-  //   // Perform the update in the database
-  //   db.transaction(
-  //     (tx) => {
-  //       tx.executeSql(
-  //         "UPDATE patterns SET isFavorite = ? WHERE id = ?",
-  //         [newIsFavorite, id],
-  //         (_, result) => {
-  //           console.log("Updated row:", result);
-
-  //           // Fetch updated data after update
-  //           fetchData();
-  //         },
-  //         (_, error) => console.log("Error updating table:", error)
-  //       );
-  //     },
-  //     (error) => console.log("Transaction error:", error)
-  //   );
-  // };
 
   const constructDropdownItems = (items) => {
     const favorites = items.filter((item) => item.isFavorite);
@@ -201,29 +134,6 @@ const DropdownPicker = () => {
     setConfigItems(configDropdownItems); // Update configuration dropdown items
   }
 
-  // const handlePatternSelect = (item) => {
-  //   setPatternLabel(item.label); // Update the selected pattern label
-  //   setPatternValue(item.value); // Update the selected pattern
-  //   setDisplayConfig(true); // Open the configuration dropdown
-
-  //   // Fetch configurations for the selected pattern
-  // db.transaction((tx) => {
-  //   tx.executeSql(
-  //     "SELECT configs FROM patterns WHERE id = ?",
-  //     [item.value],
-  //     (_, { rows }) => {
-  //       const configArray = JSON.parse(rows._array[0].configs);
-  //       const configDropdownItems = configArray.map((config, index) => ({
-  //         label: config,
-  //         value: index, // Index-based unique value
-  //       }));
-  //       setConfigItems(configDropdownItems); // Update configuration dropdown items
-  //     },
-  //     (_, error) => console.log("Error fetching configurations:", error)
-  //   );
-  // });
-  // };
-
   const handleConfigSelect = (item) => {
     setConfigValue(item.value);
   };
@@ -252,7 +162,7 @@ const DropdownPicker = () => {
       />
 
       {displayConfig && (
-        <> 
+        <>
           <Text style={styles.config}>Select a Configuration</Text>
           <DropDownPicker
             open={openConfigDropdown}
@@ -272,7 +182,11 @@ const DropdownPicker = () => {
         </>
       )}
 
-      {patternLabel && <PatternSettings pattern={patternLabel} />}
+      {patternValue && (
+        <OnlineConnectivityProvider>
+          <PatternSettings patternID={patternValue} />
+        </OnlineConnectivityProvider>
+      )}
     </>
   );
 };

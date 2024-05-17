@@ -1,22 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
-import { Text } from "react-native-paper";
+import { Portal, Snackbar, Text } from "react-native-paper";
 
-const NoiseThresholdSlider = () => {
-  const [noiseThreshold, setNoiseThreshold] = useState(0);
+const NoiseThresholdSlider = ({ data, update }) => {
+  const [noiseThreshold, setNoiseThreshold] = useState(data.noise);
+  const [visible, setVisible] = useState(false);
 
   const handleSliderChange = (newValue) => {
     setNoiseThreshold(newValue);
   };
 
-  const handleInputChange = (inputValue) => {
-    setNoiseThreshold(inputValue);
+  const handleInputChange = (input) => {
+    // Convert the input to a number
+    const inputValue = parseFloat(input);
+
+    console.log("Input Value: ", inputValue);
+
+    // Validate that it's a number and within 0-100
+    if (isNaN(inputValue)) {
+      setSmoothing(0);
+    } else if (inputValue < 0 || inputValue > 255) {
+      setNoiseThreshold(Math.min(Math.max(inputValue, 0), 255)); // Ensure the value is between 0 and 255
+      setVisible(true); // Show error message
+    } else {
+      setNoiseThreshold(inputValue);
+      setVisible(false);
+    }
   };
+
+  useEffect(() => {
+    update("noise", noiseThreshold);
+  }, [noiseThreshold]);
 
   return (
     <>
-      <Text variant="titleMedium" style={styles.title}>Noise Threshold</Text>
+      <Text variant="titleMedium" style={styles.title}>
+        Noise Threshold
+      </Text>
       <View style={styles.container}>
         <Slider
           style={styles.slider}
@@ -34,6 +55,23 @@ const NoiseThresholdSlider = () => {
           keyboardType="numeric"
         />
       </View>
+      <Portal>
+        <Snackbar
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          action={{
+            label: "close",
+          }}
+          duration={3000}
+          style={{
+            backgroundColor: "white",
+            borderColor: "red",
+            borderWidth: "3px",
+          }}
+        >
+          Input must be between 0 and 255.
+        </Snackbar>
+      </Portal>
     </>
   );
 };
@@ -53,7 +91,7 @@ const styles = StyleSheet.create({
   title: {
     color: "black",
     marginHorizontal: 22,
-    fontWeight: "600"
+    fontWeight: "600",
   },
   textInput: {
     width: 60,

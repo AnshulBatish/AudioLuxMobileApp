@@ -2,12 +2,13 @@ import * as React from "react";
 import { Stack, router } from "expo-router";
 
 import CustomHeader from "../components/CustomHeader";
-import { Pressable, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import { IconButton, PaperProvider } from "react-native-paper";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -56,21 +57,34 @@ export default function App() {
               }}
             />
             <Stack.Screen
-              name="PatternControl"
+              name="StripControlWrapper"
               options={{
-                header: () => <CustomHeader />,
+                headerBackTitle: "Password",
                 headerTitle: "",
-                headerBackTitle: "Enter Password",
                 headerRight: () => (
-                  <View style={{justifyContent: "center"}}>
+                  <View style={{ justifyContent: "center" }}>
                     <IconButton
                       icon="cog"
-                      iconColor={"white"}
+                      iconColor={"black"}
                       size={25}
-                      onPress={() => console.log("Pressed")}
+                      onPress={() => router.navigate("SystemControl")}
                     />
                   </View>
                 ),
+                headerBackground: () => (
+                  <SafeAreaView style={styles.container}>
+                    <Image
+                      source={require("../assets/images/Transparent-Cymaspace-Logo.png")}
+                      style={styles.logo}
+                    />
+                  </SafeAreaView>
+                ),
+              }}
+            />
+            <Stack.Screen
+              name="SystemControl"
+              options={{
+                headerTitle: "Device Settings",
               }}
             />
           </Stack>
@@ -79,3 +93,15 @@ export default function App() {
     </PaperProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    height: 35,
+    width: 100,
+  },
+});

@@ -3,44 +3,44 @@ import { View, TextInput, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Portal, Snackbar, Text } from "react-native-paper";
 
-const StripLength = ({data, setData}) => {
-  const [stripLength, setStripLength] = useState(0);
-  const [percentage, setPercentage] = useState(0);
+const StripLength = ({ data, update }) => {
+  const convertToPercentage = (value) => {
+    return Math.round((value / 200) * 100);
+  };
+
+  const [stripLength, setStripLength] = useState(data.length);
+  const [percentage, setPercentage] = useState(
+    convertToPercentage(stripLength)
+  );
   const [visible, setVisible] = useState(false);
 
-  // console.log("StripLength Data: ", data);
-
-  const onDismissSnackBar = () => setVisible(false);
+  useEffect(() => {
+    update("length", stripLength);
+  }, [stripLength]);
 
   const handleSliderChange = (input) => {
     setPercentage(input);
-    setStripLength(Math.round((input / 100) * 255));
+    setStripLength(Math.round((input / 100) * 200));
     setVisible(false);
   };
 
-  // useEffect(() => {
-  //   setData({
-  //    ...data,
-  //     brightness: brightness,
-  //   });
-  // }, [brightness])
-
   const handleInputChange = (input) => {
-    if (input === "") {
-      setPercentage(0);
-      setStripLength(0);
-    }
-
     // Convert the input to a number
     const inputValue = parseFloat(input);
 
+    console.log("Input Value: ", inputValue);
+
     // Validate that it's a number and within 0-100
-    if (isNaN(inputValue) || inputValue < 0 || inputValue > 100) {
-      // console.error("Input must be between 0 and 100");
+    if (isNaN(inputValue)) {
+      setPercentage(0);
+      setStripLength(30);
+    } else if (inputValue < 0 || inputValue > 100) {
+      setPercentage(Math.min(Math.max(inputValue, 0), 100));
+      setStripLength(Math.min(Math.max(inputValue, 30), 200));
       setVisible(true);
     } else {
       setPercentage(inputValue);
-      setStripLength(Math.round((inputValue / 100) * 255));
+      setStripLength(Math.round((inputValue / 100) * 200));
       setVisible(false);
     }
   };
@@ -48,7 +48,7 @@ const StripLength = ({data, setData}) => {
   return (
     <>
       <Text variant="titleMedium" style={styles.title}>
-        LED Strip Length
+        LED Strip Length (%)
       </Text>
       <View style={styles.container}>
         <Slider
@@ -62,28 +62,28 @@ const StripLength = ({data, setData}) => {
         />
         <TextInput
           style={styles.textInput}
-          value={stripLength.toString()}
-          onChangeText={handleInputChange}
-          keyboardType="numeric"
-          editable={false}
-        />
-        <TextInput
-          style={styles.textInput}
           value={percentage.toString()}
           onChangeText={handleInputChange}
           keyboardType="numeric"
         />
-        <Portal>
-          <Snackbar
-            visible={visible}
-            onDismiss={onDismissSnackBar}
-            duration={3000}
-            style={{position: "relative", top: -500}}
-          >
-            Input must be between 0 and 100 and a whole number.
-          </Snackbar>
-        </Portal>
       </View>
+      <Portal>
+        <Snackbar
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          action={{
+            label: "close",
+          }}
+          duration={3000}
+          style={{
+            backgroundColor: "white",
+            borderColor: "red",
+            borderWidth: "3px",
+          }}
+        >
+          Input must be between 0 and 100.
+        </Snackbar>
+      </Portal>
     </>
   );
 };

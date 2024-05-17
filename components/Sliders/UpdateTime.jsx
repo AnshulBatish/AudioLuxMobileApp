@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
-import { Text } from "react-native-paper";
+import { Portal, Snackbar, Text } from "react-native-paper";
 
-const UpdateTime = ({data, setData}) => {
-  const [updateTime, setUpdateTime] = useState(0);
+const UpdateTime = ({data, update}) => {
+  const [updateTime, setUpdateTime] = useState(data.loop);
+  const [visible, setVisible] = useState(false);
 
   const handleSliderChange = (newValue) => {
     setUpdateTime(newValue);
   };
 
-  const handleInputChange = (inputValue) => {
-    setUpdateTime(inputValue);
+  const handleInputChange = (input) => {
+    // Convert the input to a number
+    const inputValue = parseFloat(input);
+
+    console.log("Input Value: ", inputValue);
+
+    // Validate that it's a number and within 0-100
+    if (isNaN(inputValue)) {
+      setUpdateTime(0);
+    } else if (inputValue < 0 || inputValue > 255) {
+      setUpdateTime(Math.min(Math.max(inputValue, 0), 255)); // Ensure the value is between 0 and 255
+      setVisible(true); // Show error message
+    } else {
+      setUpdateTime(inputValue);
+      setVisible(false);
+    }
   };
 
-  // useEffect(() => {
-  //   setData({
-  //    ...data,
-  //     updateTime: updateTime,
-  //   });
-  // }, [updateTime])
+  useEffect(() => {
+    update("loop", updateTime);
+  }, [updateTime]);
 
   return (
     <>
@@ -41,6 +53,19 @@ const UpdateTime = ({data, setData}) => {
           keyboardType="numeric"
         />
       </View>
+      <Portal>
+        <Snackbar
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          action={{
+            label: "close",
+          }}
+          duration={3000}
+          style={{ backgroundColor: "white", borderColor: "red", borderWidth: "3px" }}
+        >
+          Input must be between 0 and 255.
+        </Snackbar>
+      </Portal>
     </>
   );
 };

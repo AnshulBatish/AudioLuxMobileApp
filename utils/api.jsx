@@ -8,103 +8,95 @@ const BASE_URL = "http://192.168.4.1";
 // const base_url = "http://audioluxone.local";
 const base_url = BASE_URL;
 
-const getSettings = () => getData("settings");
+const getSettings = () =>
+    getData('settings');
 
-const getPatternList = () => getData("patterns");
+const getPatternList = () =>
+    getData('patterns');
 
-const getWiFiList = () => getData("wifis");
+const getWiFiList = () =>
+    getData('wifis');
 
-const getWiFi = () => getData("wifi");
+const getWiFi = () =>
+    getData('wifi')
 
-const getWiFiJoinStatus = () => getData("wifi_status");
+const getWiFiJoinStatus = () =>
+    getData('wifi_status')
 
-const getHostname = () => getData("hostname");
+const getHostname = () =>
+    getData('hostname');
 
-const getHistory = () => getData("history");
+const getHistory = () =>
+    getData('history')
 
 const getData = (path) =>
-  axios
-    .get(`${base_url}/api/${path}`, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => response.data);
+    axios.get(`${base_url}/api/${path}`, {headers: {'Access-Control-Allow-Origin': '*'}})
+        .then(response => response.data);
 
 const saveSettings = (settings) =>
-  axios.put(`${base_url}/api/settings`, { ...settings });
+    axios.put(`${base_url}/api/settings`, {...settings}, );
 
-const joinWiFi = (wifi) => axios.put(`${base_url}/api/wifi`, { ...wifi });
+const joinWiFi = (wifi) =>
+    axios.put(`${base_url}/api/wifi`,{...wifi});
 
 const saveHostname = (hostname) =>
-  axios.put(`${base_url}/api/hostname`, { hostname });
+    axios.put(`${base_url}/api/hostname`,{hostname});
 
 // ESSENTIAL API CALLS
 
-// handle_subpattern_update_put_request
-const updateLoadedSubpattern = (subpattern, data) =>
-  axios.put(
-    `${base_url}/api/updateLoadedSubpattern?subpattern=${subpattern}`,
-    data
-  );
+// handle_pattern_put_request
+const updatePattern = (patternNum, data) =>
+    axios.put(`${base_url}/api/putPattern?p=${patternNum}`, data)
 
-// handle_pattern_update_put_request
-const updateLoadedPattern = (data) =>
-  axios.put(`${base_url}/api/updateLoadedPattern`, data);
+// handle_strip_put_request
+const updateStripSettings = (data) =>
+    axios.put(`${base_url}/api/putStrip`, data)
 
 // handle_loaded_subpattern_get_request
-const getLoadedSubpattern = (subpattern) =>
-  axios
-    .get(`${base_url}/api/loadedSubpatterns?sp=${subpattern}`, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => response.data);
+const getPattern = (patternNum) =>
+    axios.get(`${base_url}/api/getPattern?p=${patternNum}`, {headers: {'Access-Control-Allow-Origin': '*'}})
+        .then(response => response.data);
 
 // handle_loaded_pattern_settings_get_request
-const getLoadedPatternSettings = () =>
-  axios
-    .get(`${base_url}/api/loadedPatternSettings`, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => response.data);
+const getStripSettings = () =>
+    axios.get(`${base_url}/api/getStrip`, {headers: {'Access-Control-Allow-Origin': '*'}})
+        .then(response => response.data);
 
-const loadSaveSlot = async (slot) => {
-  await axios.put(`${base_url}/api/loadSaveSlot`, {
-    slot: slot,
-    timeout: 1000,
-  });
-};
+// handle_load_save_slot_put_request
+const loadSaveSlot = async (slot) =>
+    await axios.put(`${base_url}/api/load`, {slot:slot, timeout: 1000})
 
-const updateDeviceSettings = (data) => {
-  axios.put(`${base_url}/api/updateDeviceSettings`, data);
-};
-
+// handle_save_to_slot_put_request
 const saveToSlot = (slot) =>
-  axios.put(`${base_url}/api/saveToSlot`, { slot: slot });
+    axios.put(`${base_url}/api/save`, {slot:slot}) ;
 
-const getSystemSettings = () =>
-  axios
-    .get(`${base_url}/api/getDeviceSettings`, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => response.data);
+// handle_system_settings_put_request
+const updateDeviceSettings = (data) => 
+    axios.put(`${base_url}/api/putSettings`, data)
+
+// handle_system_settings_get_request
+const getDeviceSettings = () => 
+    axios.get(`${base_url}/api/getSettings`,  {headers: {'Access-Control-Allow-Origin': '*'}})
+    .then(response => response.data);
 
 export {
-  getSettings,
-  saveSettings,
-  getPatternList,
-  getWiFiList,
-  getWiFi,
-  joinWiFi,
-  getWiFiJoinStatus,
-  getHostname,
-  saveHostname,
-  getHistory,
-  getLoadedSubpattern,
-  getLoadedPatternSettings,
-  updateLoadedSubpattern,
-  updateLoadedPattern,
-  loadSaveSlot,
-  saveToSlot,
-  updateDeviceSettings,
-  getSystemSettings,
-  base_url,
+    getSettings,
+    saveSettings,
+    getPatternList,
+    getWiFiList,
+    getWiFi,
+    joinWiFi,
+    getWiFiJoinStatus,
+    getHostname,
+    saveHostname,
+    getHistory,
+    getPattern,
+    getStripSettings,
+    updatePattern,
+    updateStripSettings,
+    loadSaveSlot,
+    saveToSlot,
+    updateDeviceSettings,
+    getDeviceSettings,
+    base_url
 };

@@ -52,7 +52,5 @@ const styles = StyleSheet.create({
     fontFamily: "KSRegular",
     color: 'white',
     margin: 2,
-
-
   },
 });

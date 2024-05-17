@@ -41,6 +41,7 @@ export default function AddNewDevice() {
   return (
     <View style={styles.container}>
       {ipAddress ? <Text style={styles.paragraph}>Please Connect to an AudioLux Device through your WiFi Page</Text> : <Text style={styles.paragraph}>Waiting...</Text>}
+      <Text>{ipAddress}</Text>
     </View>
   );
 }

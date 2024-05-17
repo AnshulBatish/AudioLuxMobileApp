@@ -56,7 +56,7 @@ export default function ConnectDevice() {
     } else {
       setIsIncorrectPassword(false); // Reset state if password is correct
       setPasswordVisible(true);
-      router.navigate("PatternControl");
+      router.navigate("StripControlWrapper");
     }
   };
 

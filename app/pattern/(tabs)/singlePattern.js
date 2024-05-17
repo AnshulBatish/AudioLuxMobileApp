@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import DropdownPicker from "../../../components/DropdownPicker";
+import DropdownPicker from "../../../components/PatternPicking";
 
 const Page = () => {
   return (

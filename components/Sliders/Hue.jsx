@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
-import Slider from "@react-native-community/slider";
-import { Portal, Snackbar, Text } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
-const Hue = ({ data, setData }) => {
+const Hue = ({ data, update }) => {
   enableScroll = () => this.setState({ scrollEnabled: true });
   disableScroll = () => this.setState({ scrollEnabled: false });
 
@@ -15,12 +14,12 @@ const Hue = ({ data, setData }) => {
     setNonCollidingMultiSliderValue(values);
 
   useEffect(() => {
-    setData({
-      ...data,
-      hue_max: nonCollidingMultiSliderValue[1],
-      hue_min: nonCollidingMultiSliderValue[0],
-    });
-  }, [nonCollidingMultiSliderValue[0], nonCollidingMultiSliderValue[1]]);
+    update("hue_min", nonCollidingMultiSliderValue[0]);
+  }, [nonCollidingMultiSliderValue[0]]);
+
+  useEffect(() => {
+    update("hue_max", nonCollidingMultiSliderValue[1]);
+  }, [nonCollidingMultiSliderValue[1]]);
 
   return (
     <>

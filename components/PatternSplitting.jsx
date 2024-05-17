@@ -8,7 +8,6 @@ const PatternSplitting = ({isSwitchOn, setIsSwitchOn}) => {
 
   const onToggleSwitch = () => {
     setIsSwitchOn(!isSwitchOn);
-    // setValue("");
   };
 
   return (

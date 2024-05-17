@@ -3,9 +3,8 @@ import { View, TextInput, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Text } from "react-native-paper";
 
-const TransparencySlider = ({data, setData}) => {
-  const [transparency, setTransparency] = useState(0);
-  // const [transparency, setTransparency] = useState(data.transparency);
+const TransparencySlider = ({data, update}) => {
+  const [transparency, setTransparency] = useState(data.alpha);
 
   const handleSliderChange = (newValue) => {
     setTransparency(newValue);
@@ -16,10 +15,7 @@ const TransparencySlider = ({data, setData}) => {
   };
 
   useEffect(() => {
-    setData({
-     ...data,
-      transparency: transparency,
-    });
+    update("alpha", transparency)
   }, [transparency])
 
   return (
@@ -31,7 +27,7 @@ const TransparencySlider = ({data, setData}) => {
           minimumValue={0}
           maximumValue={255}
           step={1}
-          minimumTrackTintColor="#ff4242"
+          minimumTrackTintColor="#42baff"
           value={transparency}
           onValueChange={handleSliderChange}
         />
