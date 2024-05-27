@@ -23,20 +23,22 @@ export default function AddNewDevice() {
   }, []);
 
   useEffect(() => {
+    console.log("IPADDRESS: " + ipAddress);
     const unsubscribe = NetInfo.addEventListener((state) => {
+      console.log("---------------------------------------------------------------\n")
       console.log("Connection", state);
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
-      console.log("Details:", state.details);
-      if (state.type === "wifi" && state.isConnected) {
+      // console.log("Connection type", state.type);
+      // console.log("Is connected?", state.isConnected);
+      // console.log("Details:", state.details);
+      // if (state.type === "wifi" && state.isConnected) {
         setIpAddress(state.details.ipAddress); // Set IP Address if connected to Wi-Fi
-      }
+      // }
     });
 
     return () => {
       unsubscribe(); // Cleanup
     };
-  }, []);
+  }, [ipAddress]);
 
   return (
     <View style={styles.container}>

@@ -30,7 +30,8 @@ export default function PatternSettings({ patternID }) {
 
   // Pattern-level data structure
   const [data, setData] = useState({
-    idx: patternID,
+    idx: 0,
+    // idx: patternID,
     hue_max: 255,
     hue_min: 0,
     brightness: 255,
@@ -41,12 +42,12 @@ export default function PatternSettings({ patternID }) {
   /**
    * @description Updates the pattern index in the data structure with the new patternID.
    */
-  useEffect(() => {
-    setData((prevData) => ({
-      ...prevData,
-      idx: patternID,
-    }));
-  }, [patternID]); // Add patternID to the dependency array
+  // useEffect(() => {
+  //   setData((prevData) => ({
+  //     ...prevData,
+  //     idx: patternID,
+  //   }));
+  // }, [patternID]); // Add patternID to the dependency array
 
   /**
    * @brief Manages initial querying of the data from the NanoLux device.
@@ -54,7 +55,7 @@ export default function PatternSettings({ patternID }) {
    */
   useEffect(() => {
     if (isConnected) {
-      getPattern(num)
+      getPattern(patternID)
         .then((data) => {
           setData(data);
         })
@@ -69,7 +70,7 @@ export default function PatternSettings({ patternID }) {
    */
   useInterval(() => {
     if (isConnected && updated) {
-      updatePattern(num, data);
+      updatePattern(patternID, data);
       setUpdated(false);
     }
   }, 100);

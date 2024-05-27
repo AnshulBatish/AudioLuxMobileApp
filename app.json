@@ -1,35 +1,43 @@
 {
-  "scheme": "acme",
-  "web": {
-    "bundler": "metro"
-  },
-  "plugins": [
-    ["expo-router"],
-    ["react-native-wifi-reborn"],
-    [
-      "expo-location",
-      {
-        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-      }
-    ]
-  ],
-  "name": "AudioLuxMobileApp",
-  "slug": "AudioLuxMobileApp",
-  "ios": {
-    "bundleIdentifier": "com.anshulbat.AudioLuxMobileApp",
-    "entitlements": {
-      "com.apple.developer.networking.wifi-info": true
-    }
-  },
-  "extra": {
-    "router": {
-      "origin": false
+  "expo": {
+    "scheme": "acme",
+    "web": {
+      "bundler": "metro"
     },
-    "eas": {
-      "projectId": "e9e1f130-0e41-48d9-8036-b10091052b58"
+    "plugins": [
+      [
+        "expo-router"
+      ],
+      [
+        "react-native-wifi-reborn"
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
+    "name": "AudioLuxApp",
+    "slug": "AudioLuxMobileApp",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.anshulbat.AudioLuxMobileApp",
+      "entitlements": {
+        "com.apple.developer.networking.wifi-info": true
+      }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "e9e1f130-0e41-48d9-8036-b10091052b58"
+      }
+    },
+    "android": {
+      "package": "com.anshulbat.AudioLuxMobileApp",
+      "versionCode": 2
     }
-  },
-  "android": {
-    "package": "com.anshulbat.AudioLuxMobileApp"
   }
 }
