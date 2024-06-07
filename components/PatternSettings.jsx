@@ -15,7 +15,7 @@ import Brightness from "./Sliders/Brightness";
 import Hue from "./Sliders/Hue";
 
 export default function PatternSettings({ patternID }) {
-  console.log("PATTERN ID: ", patternID);
+  console.log("PATTERN IDS: ", patternID);
   const scrollViewRef = useRef(null);
 
   // Checks if the web app is connected to the device.
