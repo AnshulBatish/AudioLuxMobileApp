@@ -37,7 +37,7 @@
     },
     "android": {
       "package": "com.anshulbat.AudioLuxMobileApp",
-      "versionCode": 2
+      "versionCode": 5
     }
   }
 }

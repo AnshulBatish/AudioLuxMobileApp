@@ -31,7 +31,6 @@ export default function PatternSettings({ patternID }) {
   // Pattern-level data structure
   const [data, setData] = useState({
     idx: 0,
-    // idx: patternID,
     hue_max: 255,
     hue_min: 0,
     brightness: 255,
